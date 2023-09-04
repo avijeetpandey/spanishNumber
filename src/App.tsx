@@ -8,6 +8,9 @@ import {
   Text,
 } from 'react-native';
 
+import Sound from 'react-native-sound';
+Sound.setCategory('Playback');
+
 // list of sounds to play
 const soundList = [
   require('./../assets/one.wav'),
@@ -23,13 +26,32 @@ const soundList = [
 ];
 
 function App() {
+  // function to play sound
+  function playSound(sound) {
+    const soundPlayer = new Sound(sound, Sound.MAIN_BUNDLE, function (err) {
+      if (err) {
+        console.log('Unable to play sound');
+      }
+    });
+
+    soundPlayer.play();
+
+    // release the reference after the resource is being used
+    soundPlayer.release();
+  }
+
   return (
     <ScrollView style={styles.container}>
       <Image source={require('../assets/logo.png')} style={styles.logo} />
       <View style={styles.gridContainer}>
         {soundList.map(sound => {
           return (
-            <TouchableOpacity key={sound} onPress={() => {}} style={styles.box}>
+            <TouchableOpacity
+              key={sound}
+              onPress={() => {
+                playSound(sound);
+              }}
+              style={styles.box}>
               <Text style={styles.text}>{sound}</Text>
             </TouchableOpacity>
           );
